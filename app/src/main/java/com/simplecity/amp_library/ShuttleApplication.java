@@ -219,8 +219,9 @@ public class ShuttleApplication extends Application {
     public static String getVersion() {
         try {
             return instance.getPackageManager().getPackageInfo(instance.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException | NullPointerException ignored) {
-
+        } catch (PackageManager.NameNotFoundException | NullPointerException e) {
+            // Log the exception for visibility
+            Log.e(TAG, "Error getting version: " + e.getMessage(), e);
         }
         return "unknown";
     }
