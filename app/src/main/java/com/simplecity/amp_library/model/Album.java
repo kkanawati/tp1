@@ -48,18 +48,18 @@ public class Album implements
 
     private String sortKey;
 
-    public Album(long id, String name, List<Artist> artists, String albumArtistName, int numSongs, int numDiscs, int year, long lastPlayed, long dateAdded, List<String> paths, int songPlayCount) {
-        this.id = id;
-        this.name = name;
-        this.artists = artists;
-        this.albumArtistName = albumArtistName;
-        this.numSongs = numSongs;
-        this.numDiscs = numDiscs;
-        this.year = year;
-        this.lastPlayed = lastPlayed;
-        this.dateAdded = dateAdded;
-        this.paths = paths;
-        this.songPlayCount = songPlayCount;
+    public Album(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.artists = builder.artists;
+        this.albumArtistName = builder.albumArtistName;
+        this.numSongs = builder.numSongs;
+        this.numDiscs = builder.numDiscs;
+        this.year = builder.year;
+        this.lastPlayed = builder.lastPlayed;
+        this.dateAdded = builder.dateAdded;
+        this.paths = builder.paths;
+        this.songPlayCount = builder.songPlayCount;
 
         //Populate the artwork key & sort key properties if null.
         setSortKey();
