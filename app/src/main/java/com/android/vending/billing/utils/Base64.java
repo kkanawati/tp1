@@ -310,7 +310,6 @@ public class Base64 {
         for (; d < len2; d += 3, e += 4) {
 
             // The following block of code is the same as
-            // encode3to4( source, d + off, 3, outBuff, e, alphabet );
             // but inlined for faster encoding (~20% improvement)
             int inBuff =
                     ((source[d + off] << 24) >>> 8)
