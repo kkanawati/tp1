@@ -129,8 +129,8 @@ public class SearchPresenter extends Presenter<SearchView> implements
                     .lift(new AlbumFilterOperator(query, requestManager, prefixHighlighter)) : Single.just(Collections.emptyList());
 
             Single<List<ViewModel>> songsObservable = DataManager.getInstance().getSongsRelay()
-                    .first(Collections.emptyList())
-                    .lift(new SongFilterOperator(query, requestManager, prefixHighlighter));
+                .first(Collections.emptyList())
+                .lift(new SongFilterOperator<>(query, requestManager, prefixHighlighter));
 
             performSearchSubscription = Single.zip(
                     albumArtistsObservable, albumsObservable, songsObservable,
