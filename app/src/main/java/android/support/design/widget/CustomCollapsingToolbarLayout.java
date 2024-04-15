@@ -394,22 +394,20 @@ public class CustomCollapsingToolbarLayout extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (mLastInsets != null) {
+        if (mLastInsets != null && getChildCount() > 0 && insetTop >= 0) {
             // Shift down any views which are not set to fit system windows
             final int insetTop = mLastInsets.getSystemWindowInsetTop();
-            for (int i = 0, z = getChildCount(); i < z; i++) {
+            for (int i = 0; i < getChildCount(); i++) {
                 final View child = getChildAt(i);
-                if (!ViewCompat.getFitsSystemWindows(child)) {
-                    if (child.getTop() < insetTop) {
-                        // If the child isn't set to fit system windows but is drawing within
-                        // the inset offset it down
-                        ViewCompat.offsetTopAndBottom(child, insetTop);
-                    }
+                if (!ViewCompat.getFitsSystemWindows(child) && child.getTop() < insetTop) {
+                    // If the child isn't set to fit system windows but is drawing within
+                    // the inset offset it down
+                    ViewCompat.offsetTopAndBottom(child, insetTop);
                 }
             }
         }
-
-        // Update the collapsed bounds by getting it's transformed bounds
+    }
+    // Update the collapsed bounds by getting it's transformed bounds
         if (mCollapsingTitleEnabled && mDummyView != null) {
             // We only draw the title if the dummy view is being displayed (Toolbar removes
             // views if there is no space)
