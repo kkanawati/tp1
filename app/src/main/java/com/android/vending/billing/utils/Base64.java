@@ -161,7 +161,7 @@ public class Base64 {
         };
 
     // Indicates white space in encoding
-    private final static byte WHITE_SPACE_ENC = -5;
+    private static final byte WHITE_SPACE_ENC = -5;
     // Indicates equals sign in encoding
     private final static byte EQUALS_SIGN_ENC = -1;
 
