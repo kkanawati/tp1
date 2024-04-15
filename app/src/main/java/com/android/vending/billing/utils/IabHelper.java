@@ -641,9 +641,9 @@ public class IabHelper {
             flagEndAsync();
 
             final IabResult result_f = result;
-            final Inventory inv_f = inv;
+            final Inventory inventory = inv;
             if (!mDisposed && listener != null) {
-                handler.post(() -> listener.onQueryInventoryFinished(result_f, inv_f));
+                handler.post(() -> listener.onQueryInventoryFinished(result_f, inventory));
             }
         })).start();
     }
