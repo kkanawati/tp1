@@ -805,7 +805,7 @@ public class IabHelper {
         else {
             logError("Unexpected type for bundle response code.");
             logError(o.getClass().getName());
-            throw new RuntimeException("Unexpected type for bundle response code: " + o.getClass().getName());
+            throw new UnexpectedBundleTypeException("Unexpected type for bundle response code: " + o.getClass().getName());
         }
     }
 
