@@ -161,7 +161,7 @@ public class Base64 {
         };
 
     // Indicates white space in encoding
-    private final static byte WHITE_SPACE_ENC = -5;
+    private static final byte WHITE_SPACE_ENC = -5;
     // Indicates equals sign in encoding
     private final static byte EQUALS_SIGN_ENC = -1;
 
@@ -276,7 +276,7 @@ public class Base64 {
 
         // If doPadding is false, set length to truncate '='
         // padding characters
-        while (doPadding == false && outLen > 0) {
+        while (!doPadding && outLen > 0) {
             if (outBuff[outLen - 1] != '=') {
                 break;
             }
@@ -310,7 +310,6 @@ public class Base64 {
         for (; d < len2; d += 3, e += 4) {
 
             // The following block of code is the same as
-            // encode3to4( source, d + off, 3, outBuff, e, alphabet );
             // but inlined for faster encoding (~20% improvement)
             int inBuff =
                     ((source[d + off] << 24) >>> 8)

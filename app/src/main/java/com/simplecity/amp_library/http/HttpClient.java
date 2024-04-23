@@ -19,7 +19,7 @@ public class HttpClient {
 
     public OkHttpClient okHttpClient;
 
-    public LastFmService lastFmService;
+    static final LastFmService lastFmService;
 
     public ItunesService itunesService;
 

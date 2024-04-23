@@ -73,7 +73,7 @@ public class ShuttleApplication extends Application {
 
     private RefWatcher refWatcher;
 
-    public HashMap<String, UserSelectedArtwork> userSelectedArtwork = new HashMap<>();
+    public Map<String, UserSelectedArtwork> userSelectedArtwork = new HashMap<>();
 
     private static Logger jaudioTaggerLogger1 = Logger.getLogger("org.jaudiotagger.audio");
     private static Logger jaudioTaggerLogger2 = Logger.getLogger("org.jaudiotagger");
@@ -219,8 +219,9 @@ public class ShuttleApplication extends Application {
     public static String getVersion() {
         try {
             return instance.getPackageManager().getPackageInfo(instance.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException | NullPointerException ignored) {
-
+        } catch (PackageManager.NameNotFoundException | NullPointerException e) {
+            // Log the exception for visibility
+            Log.e(TAG, "Error getting version: " + e.getMessage(), e);
         }
         return "unknown";
     }
@@ -329,18 +330,5 @@ public class ShuttleApplication extends Application {
                             }
                         })
                 );
-    }
-
-    private void enableStrictMode() {
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .build());
-
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .penaltyFlashScreen()
-                .build());
     }
 }
