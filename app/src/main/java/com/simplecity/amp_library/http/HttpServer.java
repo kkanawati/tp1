@@ -171,14 +171,15 @@ public class HttpServer {
 
     public HttpServer() {
         MIME_TYPES = new HashMap<>();
+        final String TEXT_PLAIN = "text/plain"; // Define constant for "text/plain"
         MIME_TYPES.put("css", "text/css");
         MIME_TYPES.put("htm", "text/html");
         MIME_TYPES.put("html", "text/html");
         MIME_TYPES.put("xml", "text/xml");
         MIME_TYPES.put("java", "text/x-java-source, text/java");
-        MIME_TYPES.put("md", "text/plain");
-        MIME_TYPES.put("txt", "text/plain");
-        MIME_TYPES.put("asc", "text/plain");
+        MIME_TYPES.put("md", TEXT_PLAIN);
+        MIME_TYPES.put("txt", TEXT_PLAIN);
+        MIME_TYPES.put("asc", TEXT_PLAIN);
         MIME_TYPES.put("gif", "image/gif");
         MIME_TYPES.put("jpg", "image/jpeg");
         MIME_TYPES.put("jpeg", "image/jpeg");
