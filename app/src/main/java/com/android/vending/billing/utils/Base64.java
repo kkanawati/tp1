@@ -40,7 +40,7 @@ package com.android.vending.billing.utils;
  */
 public class Base64 {
     /** Specify encoding (value is {@code true}). */
-    public final static boolean ENCODE = true;
+    public final static boolean ENCODED = true;
 
     /** Specify decoding (value is {@code false}). */
     public final static boolean DECODE = false;
