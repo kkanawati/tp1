@@ -2399,11 +2399,11 @@ public class MusicService extends Service implements MultiPlayer.OnCompletionSer
         }
     }
 
-    public int getShuffleMode() {
+    public synchronized int getShuffleMode() {
         return shuffleMode;
     }
 
-    public void setShuffleMode(int shufflemode) {
+    public synchronized void setShuffleMode(int shufflemode) {
         synchronized (this) {
             if (shuffleMode == shufflemode && !getCurrentPlaylist().isEmpty()) {
                 return;
@@ -2413,6 +2413,7 @@ public class MusicService extends Service implements MultiPlayer.OnCompletionSer
             saveQueue(false);
         }
     }
+
 
 
     public int getRepeatMode() {
