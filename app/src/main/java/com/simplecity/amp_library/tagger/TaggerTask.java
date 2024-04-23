@@ -182,9 +182,8 @@ public class TaggerTask extends AsyncTask<Object, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-
         if (tagCompletionListener != null) {
-            if (success) {
+            if (success != null && success) {
                 tagCompletionListener.onSuccess();
             } else {
                 tagCompletionListener.onFailure();
