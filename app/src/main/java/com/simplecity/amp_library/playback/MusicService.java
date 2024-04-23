@@ -102,7 +102,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("InlinedApi")
-public class MusicService extends Service {
+public class MusicService extends Service implements MultiPlayer.OnCompletionService {
 
     private static final String TAG = "MusicService";
 
@@ -327,6 +327,11 @@ public class MusicService extends Service {
 
     boolean pauseOnTrackFinish = false;
 
+    @Override
+    public void onCompletion() {
+        // Handle completion event here
+    }
+
     void updatePlaybackLocation(int location) {
 
         //If the location has changed and it's no longer ChromeCast
@@ -453,6 +458,9 @@ public class MusicService extends Service {
 
                 HttpServer.getInstance().stop();
             }
+
+            MultiPlayer multiPlayer = new MultiPlayer(this);
+            multiPlayer.setOnCompletionListener(this);
 
             @Override
             public void onDisconnected() {
