@@ -27,17 +27,6 @@ public class LegacyDatabaseUtils {
     }
 
     /**
-     * @return a <b>continuous</b> stream of {@link List<BlacklistedSong>>}, backed by a behavior relay for caching query results.
-     */
-    private static Single<List<BlacklistedSong>> getBlacklistRelay() {
-        return getBlacklistDatabase()
-                .createQuery(BlacklistDbOpenHelper.TABLE_SONGS, "SELECT * FROM " + BlacklistDbOpenHelper.TABLE_SONGS)
-                .mapToList(BlacklistedSong::new)
-                .first(Collections.emptyList())
-                .subscribeOn(Schedulers.io());
-    }
-
-    /**
      * @return a {@link BriteDatabase} wrapping the whitelist SqliteOpenHelper.
      */
     public static BriteDatabase getWhitelistDatabase() {

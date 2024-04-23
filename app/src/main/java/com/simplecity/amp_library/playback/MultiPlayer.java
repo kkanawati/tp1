@@ -202,19 +202,18 @@ class MultiPlayer implements
 
     @Override
     public boolean onError(final MediaPlayer mp, final int what, final int extra) {
-        switch (what) {
-            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                mIsInitialized = false;
-                mCurrentMediaPlayer.release();
-                mCurrentMediaPlayer = new MediaPlayer();
-                mCurrentMediaPlayer.setWakeMode(mService.get(), PowerManager.PARTIAL_WAKE_LOCK);
-                mHandler.sendMessageDelayed(mHandler.obtainMessage(MusicService.PlayerHandler.SERVER_DIED), 2000);
-                return true;
-            default:
-                break;
+        if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
+            mIsInitialized = false;
+            mCurrentMediaPlayer.release();
+            mCurrentMediaPlayer = new MediaPlayer();
+            mCurrentMediaPlayer.setWakeMode(mService.get(), PowerManager.PARTIAL_WAKE_LOCK);
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(MusicService.PlayerHandler.SERVER_DIED), 2000);
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
+
 
     @Override
     public void onCompletion(final MediaPlayer mp) {

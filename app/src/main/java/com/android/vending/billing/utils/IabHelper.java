@@ -482,50 +482,91 @@ public class IabHelper {
 
     private void handleActivityResultOk(int responseCode, String purchaseData, String dataSignature) {
         if (responseCode == BILLING_RESPONSE_RESULT_OK) {
-            logDebug("Successful resultcode from purchase activity.");
-            logDebug("Purchase data: " + purchaseData);
-            logDebug("Data signature: " + dataSignature);
-            logDebug("Extras: " + data.getExtras());
-            logDebug("Expected item type: " + mPurchasingItemType);
+            handleSuccessfulResult(purchaseData, dataSignature);
+        } else {
+            handleNonOkResult(responseCode);
+        }
+    }
 
-            if (purchaseData == null || dataSignature == null) {
-                logError("BUG: either purchaseData or dataSignature is null.");
-                logDebug("Extras: " + data.getExtras().toString());
-                IabResult result = new IabResult(IABHELPER_UNKNOWN_ERROR, "IAB returned null purchaseData or dataSignature");
-                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
+    private void handleSuccessfulResult(String purchaseData, String dataSignature) {
+        logDebug("Successful result code from purchase activity.");
+        logPurchaseDetails(purchaseData, dataSignature);
+
+        if (purchaseData == null || dataSignature == null) {
+            handleNullDataError();
+            return;
+        }
+
+        try {
+            Purchase purchase = createPurchase(purchaseData, dataSignature);
+            String sku = purchase.getSku();
+
+            if (!verifyPurchaseSignature(purchaseData, dataSignature)) {
+                handleVerificationFailed(sku);
                 return;
             }
 
-            try {
-                Purchase purchase = new Purchase(mPurchasingItemType, purchaseData, dataSignature);
-                String sku = purchase.getSku();
-
-                // Verify signature
-                if (!Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature)) {
-                    logError("Purchase signature verification FAILED for sku " + sku);
-                    IabResult result = new IabResult(IABHELPER_VERIFICATION_FAILED, "Signature verification failed for sku " + sku);
-                    if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, purchase);
-                    return;
-                }
-                logDebug("Purchase signature successfully verified.");
-
-                if (mPurchaseListener != null) {
-                    mPurchaseListener.onIabPurchaseFinished(new IabResult(BILLING_RESPONSE_RESULT_OK, "Success"), purchase);
-                }
-            } catch (JSONException e) {
-                logError("Failed to parse purchase data.");
-                e.printStackTrace();
-                IabResult result = new IabResult(IABHELPER_BAD_RESPONSE, "Failed to parse purchase data.");
-                if (mPurchaseListener != null) mPurchaseListener.onIabPurchaseFinished(result, null);
-            }
-        } else {
-            logDebug("Result code was OK but in-app billing response was not OK: " + getResponseDesc(responseCode));
-            if (mPurchaseListener != null) {
-                IabResult result = new IabResult(responseCode, "Problem purchashing item.");
-                mPurchaseListener.onIabPurchaseFinished(result, null);
-            }
+            logDebug("Purchase signature successfully verified.");
+            notifyPurchaseFinished(BILLING_RESPONSE_RESULT_OK, "Success", purchase);
+        } catch (JSONException e) {
+            handleFailedParseError();
         }
     }
+
+    private void logPurchaseDetails(String purchaseData, String dataSignature) {
+        logDebug("Purchase data: " + purchaseData);
+        logDebug("Data signature: " + dataSignature);
+        logDebug("Expected item type: " + mPurchasingItemType);
+    }
+
+    private void handleNullDataError() {
+        logError("BUG: either purchaseData or dataSignature is null.");
+        logDebug("Extras: " + data.getExtras().toString());
+        IabResult result = new IabResult(IABHELPER_UNKNOWN_ERROR, "IAB returned null purchaseData or dataSignature");
+        notifyPurchaseFinished(result, null);
+    }
+
+    private Purchase createPurchase(String purchaseData, String dataSignature) throws JSONException {
+        return new Purchase(mPurchasingItemType, purchaseData, dataSignature);
+    }
+
+    private boolean verifyPurchaseSignature(String purchaseData, String dataSignature) {
+        return Security.verifyPurchase(mSignatureBase64, purchaseData, dataSignature);
+    }
+
+    private void handleVerificationFailed(String sku) {
+        logError("Purchase signature verification FAILED for sku " + sku);
+        IabResult result = new IabResult(IABHELPER_VERIFICATION_FAILED, "Signature verification failed for sku " + sku);
+        notifyPurchaseFinished(result, null);
+    }
+
+    private void notifyPurchaseFinished(int resultCode, String message, Purchase purchase) {
+        if (mPurchaseListener != null) {
+            mPurchaseListener.onIabPurchaseFinished(new IabResult(resultCode, message), purchase);
+        }
+    }
+
+    private void notifyPurchaseFinished(IabResult result, Purchase purchase) {
+        if (mPurchaseListener != null) {
+            mPurchaseListener.onIabPurchaseFinished(result, purchase);
+        }
+    }
+
+    private void handleFailedParseError() {
+        logError("Failed to parse purchase data.");
+        e.printStackTrace();
+        IabResult result = new IabResult(IABHELPER_BAD_RESPONSE, "Failed to parse purchase data.");
+        notifyPurchaseFinished(result, null);
+    }
+
+    private void handleNonOkResult(int responseCode) {
+        logDebug("Result code was OK but in-app billing response was not OK: " + getResponseDesc(responseCode));
+        if (mPurchaseListener != null) {
+            IabResult result = new IabResult(responseCode, "Problem purchasing item.");
+            notifyPurchaseFinished(result, null);
+        }
+    }
+
 
     private void handleActivityResultCanceled(int responseCode) {
         logDebug("Purchase canceled - Response: " + getResponseDesc(responseCode));

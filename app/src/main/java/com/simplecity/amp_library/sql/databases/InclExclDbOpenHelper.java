@@ -83,6 +83,8 @@ public class InclExclDbOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // This method is intentionally left empty because the database schema is not expected to change.
+        // If the database schema needs to be modified in future versions, appropriate actions will be taken.
+        // For now, there are no upgrade tasks required.
     }
 }
