@@ -1691,7 +1691,7 @@ public class MusicService extends Service implements MultiPlayer.OnCompletionSer
 
             if (player != null) {
                 player.setDataSource(song.path);
-                if (player != null && player.isInitialized()) {
+                if (player.isInitialized()) {
                     openFailedCounter = 0;
                     return true;
                 }
