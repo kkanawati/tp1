@@ -99,8 +99,6 @@ public class ShuttleApplication extends Application {
             return;
         }
 
-        instance = this;
-
         if (BuildConfig.DEBUG) {
             Log.w(TAG, "**Debug mode is ON**");
 
@@ -117,23 +115,23 @@ public class ShuttleApplication extends Application {
 
         //Crashlytics
         CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build();
+            .disabled(BuildConfig.DEBUG)
+            .build();
 
         Fabric.with(this,
-                new Crashlytics.Builder()
-                        .core(crashlyticsCore)
-                        .answers(new Answers())
-                        .build());
+            new Crashlytics.Builder()
+                .core(crashlyticsCore)
+                .answers(new Answers())
+                .build());
 
         //Firebase Analytics
         FirebaseAnalytics.getInstance(this);
 
         VideoCastManager.initialize(this,
-                new CastConfiguration.Builder(Config.CHROMECAST_APP_ID)
-                        .enableLockScreen()
-                        .enableNotification()
-                        .build()
+            new CastConfiguration.Builder(Config.CHROMECAST_APP_ID)
+                .enableLockScreen()
+                .enableNotification()
+                .build()
         );
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -160,40 +158,41 @@ public class ShuttleApplication extends Application {
         SettingsManager.getInstance().incrementLaunchCount();
 
         Completable.fromAction(() -> {
-            Query query = new Query.Builder()
+                Query query = new Query.Builder()
                     .uri(CustomArtworkTable.URI)
                     .projection(new String[]{CustomArtworkTable.COLUMN_ID, CustomArtworkTable.COLUMN_KEY, CustomArtworkTable.COLUMN_TYPE, CustomArtworkTable.COLUMN_PATH})
                     .build();
 
-            SqlUtils.createActionableQuery(ShuttleApplication.this, cursor ->
-                            userSelectedArtwork.put(
-                                    cursor.getString(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_KEY)),
-                                    new UserSelectedArtwork(
-                                            cursor.getInt(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_TYPE)),
-                                            cursor.getString(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_PATH)))
-                            ),
+                SqlUtils.createActionableQuery(ShuttleApplication.this, cursor ->
+                        userSelectedArtwork.put(
+                            cursor.getString(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_KEY)),
+                            new UserSelectedArtwork(
+                                cursor.getInt(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_TYPE)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(CustomArtworkTable.COLUMN_PATH)))
+                        ),
                     query);
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            })
+            .subscribeOn(Schedulers.io())
+            .subscribe();
 
         // Clean up the genres database - remove any genres which contain no songs. Also, populates song counts.
         // Since this is called on app launch, let's delay to allow more important tasks to complete.
         cleanGenres()
-                .delaySubscription(5000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            .delaySubscription(5000, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .subscribe();
 
         Completable.timer(7500, TimeUnit.MILLISECONDS)
-                .andThen(cleanMostPlayedPlaylist())
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            .andThen(cleanMostPlayedPlaylist())
+            .subscribeOn(Schedulers.io())
+            .subscribe();
 
         Completable.timer(10000, TimeUnit.MILLISECONDS)
-                .andThen(LegacyUtils.deleteOldResources())
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+            .andThen(LegacyUtils.deleteOldResources())
+            .subscribeOn(Schedulers.io())
+            .subscribe();
     }
+
 
     public RefWatcher getRefWatcher() {
         return this.refWatcher;
